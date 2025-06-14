@@ -69,7 +69,7 @@
 ## Implementation Result
 ![readers](https://github.com/YooJiHyeok/Readers-Writers-Problem/blob/main/reader_prefernece.png)
 ## Evaluation
-15번의 실행 중 Reader가 9번으로 우선적으로 처리되는 것을 볼 수 있다.
+Reader가 우선적으로 처리되는 것을 볼 수 있다.
 ## Code
 
     #include <stdio.h>
@@ -160,6 +160,8 @@
     }
 
 ## Implementation Result
-![readers](https://github.com/YooJiHyeok/Readers-Writers-Problem/blob/main/reader_prefernece.png)
+![writers](https://github.com/YooJiHyeok/Readers-Writers-Problem/blob/main/writers_preference.png)
 ## Evaluation
-15번의 실행 중 Reader가 9번으로 우선적으로 처리되는 것을 볼 수 있다.
+writer가 우선적으로 처리되는 것을 볼 수 있다.
+## Conclusion
+코드 구현이 어려워 코딩 ai(챗 gpt 및 Gemini)를 일부 참고하여 구현 하였다. 앞으로의 진로 및 실무를 위해서 추가적인 공부의 필요성을 느꼈다.
