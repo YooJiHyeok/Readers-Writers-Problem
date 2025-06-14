@@ -70,6 +70,8 @@
 ![readers](https://github.com/YooJiHyeok/Readers-Writers-Problem/blob/main/reader_prefernece.png)
 ## Evaluation
 Reader가 우선적으로 처리되는 것을 볼 수 있다.
+
+# Writer Preference
 ## Code
 
     #include <stdio.h>
