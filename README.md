@@ -67,9 +67,99 @@
         return 0;
     }
 ## Implementation Result
-![PCP_snapshot]()
-
+![readers](https://github.com/YooJiHyeok/Readers-Writers-Problem/blob/main/reader_prefernece.png)
 ## Evaluation
-세마포어를 이용해서 구현 했고, 총 10번의 테스트 결과 음수 및 30 이상의 값은 출력되지 않았다.
-## Conclusion
-직접 Producer-Consumer Problem을 구현 해 보니 초반에는 막막했지만 수업 영상을 다시 보며 따라가보니 구현 할 수 있었고 생각보다 어렵지 않았음을 느꼈다.
+15번의 실행 중 Reader가 9번으로 우선적으로 처리되는 것을 볼 수 있다.
+## Code
+
+    #include <stdio.h>
+    #include <pthread.h>
+    #include <semaphore.h>
+
+    int readcount = 0;
+    int writecount = 0;
+    int data = 0;
+
+    sem_t rmutex;     // readcount 보호
+    sem_t wmutex;     // writecount 보호
+    sem_t readTry;    // reader 접근 제어
+    sem_t resource;   // 실제 데이터 접근
+
+    void* reader(void* arg) {
+        int id = *(int*)arg;
+        for (int i = 0; i < 3; i++) {
+            sem_wait(&readTry);
+            sem_wait(&rmutex);
+            readcount++;
+            if (readcount == 1)
+                sem_wait(&resource);
+            sem_post(&rmutex);
+            sem_post(&readTry);
+
+            printf("Reader %d: read data = %d\n", id, data);
+
+            sem_wait(&rmutex);
+            readcount--;
+            if (readcount == 0)
+                sem_post(&resource);
+            sem_post(&rmutex);
+        }
+        return NULL;
+    }
+
+    void* writer(void* arg) {
+        int id = *(int*)arg;
+        for (int i = 0; i < 3; i++) {
+            sem_wait(&wmutex);
+            writecount++;
+            if (writecount == 1)
+                sem_wait(&readTry);
+            sem_post(&wmutex);
+
+            sem_wait(&resource);
+            data++;
+            printf("Writer %d: wrote data = %d\n", id, data);
+            sem_post(&resource);
+
+            sem_wait(&wmutex);
+            writecount--;
+            if (writecount == 0)
+                sem_post(&readTry);
+            sem_post(&wmutex);
+        }
+        return NULL;
+    }
+
+    int main() {
+        pthread_t r[3], w[2];
+        int rid[3] = { 1, 2, 3 };
+        int wid[2] = { 1, 2 };
+
+        sem_init(&rmutex, 0, 1);
+        sem_init(&wmutex, 0, 1);
+        sem_init(&readTry, 0, 1);
+        sem_init(&resource, 0, 1);
+
+        for (int i = 0; i < 3; i++)
+            pthread_create(&r[i], NULL, reader, &rid[i]);
+
+        for (int i = 0; i < 2; i++)
+            pthread_create(&w[i], NULL, writer, &wid[i]);
+
+        for (int i = 0; i < 3; i++)
+            pthread_join(r[i], NULL);
+        for (int i = 0; i < 2; i++)
+            pthread_join(w[i], NULL);
+
+        sem_destroy(&rmutex);
+        sem_destroy(&wmutex);
+        sem_destroy(&readTry);
+        sem_destroy(&resource);
+
+        return 0;
+    }
+
+## Implementation Result
+![readers](https://github.com/YooJiHyeok/Readers-Writers-Problem/blob/main/reader_prefernece.png)
+## Evaluation
+15번의 실행 중 Reader가 9번으로 우선적으로 처리되는 것을 볼 수 있다.
