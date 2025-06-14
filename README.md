@@ -1,4 +1,4 @@
-# Producer-Consumer Problem
+# Readers-Writers Problem
 # Reader preference
 ## Code
 
